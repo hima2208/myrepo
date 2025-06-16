@@ -8,3 +8,6 @@ Consistently adhered to Return-to-Office and compliance policies, completed mand
 
 
 Followed return-to-office rules, finished required trainings on time, and followed company policies to help reduce risk and stay ready for audits.
+
+
+Implemented a GenAI-based email classification POC using TKD to explore automation opportunities with potential to reduce manual review effort and improve response time. Evaluated the GSU-developed mortgage fraud detection model for production readiness; redesigned data pipelines to integrate with Snowflake for improved scalability and lower data processing costs. Collaborated with business stakeholders to finalize production-ready features and initiated model benchmarking using XGBoost to align with performance and ROI targets for fraud risk reduction.
