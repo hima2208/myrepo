@@ -2,3 +2,6 @@ mplemented POC for GenAI-based email classification using TKD, and evaluated the
 As data sources are migrating to Snowflake, redesigned data pipelines to source directly from Snowflake. Collaborated with business stakeholders to align on 
 feature selection and initiated model benchmarking using XGBoost to meet production 
 standards.
+
+
+Consistently adhered to Return-to-Office and compliance policies, completed mandatory trainings on time, and followed organizational guidelines to support operational risk mitigation and audit readiness.
