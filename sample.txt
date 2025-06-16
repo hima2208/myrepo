@@ -1,0 +1,4 @@
+mplemented POC for GenAI-based email classification using TKD, and evaluated the GSU-developed mortgage fraud detection model for production readiness. 
+As data sources are migrating to Snowflake, redesigned data pipelines to source directly from Snowflake. Collaborated with business stakeholders to align on 
+feature selection and initiated model benchmarking using XGBoost to meet production 
+standards.
