@@ -1,51 +1,62 @@
-
-
 import boto3
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
+from botocore.exceptions import ClientError
 
-# --- AWS Session Setup ---
-session = boto3.Session(
-    aws_access_key_id='your-access-key-id',
-    aws_secret_access_key='your-secret-access-key',
-    aws_session_token='your-session-token',  # omit if not using temporary creds
-    region_name='us-east-1'
-)
-dynamodb = session.resource('dynamodb')
+# Replace with your actual region
+AWS_REGION = "us-east-1"
 
-# --- Create Table if not exists ---
-table_name = 'EnvironmentRequests'
-try:
-    table = dynamodb.create_table(
-        TableName=table_name,
-        KeySchema=[
-            {'AttributeName': 'request_id', 'KeyType': 'HASH'}
-        ],
-        AttributeDefinitions=[
-            {'AttributeName': 'request_id', 'AttributeType': 'S'}
-        ],
-        ProvisionedThroughput={
-            'ReadCapacityUnits': 5,
-            'WriteCapacityUnits': 5
-        }
-    )
-    table.meta.client.get_waiter('table_exists').wait(TableName=table_name)
-    print(f"✅ Table '{table_name}' created.")
-except dynamodb.meta.client.exceptions.ResourceInUseException:
-    table = dynamodb.Table(table_name)
-    print(f"⚠️ Table '{table_name}' already exists. Proceeding...")
+# Initialize DynamoDB resource
+dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 
-# --- Create and Insert Record ---
-request_id = str(uuid.uuid4())
+# Table name to be used
+TABLE_NAME = "EnvironmentRequests"
 
-item = {
-    'request_id': request_id,
-    'env_name': 'DemoEnv',
-    'env_purpose': 'Testing',
-    'use_case': 'Demo Use Case',
-    'data_domain': 'Retail',
-    'timestamp': datetime.utcnow().isoformat()
-}
+def create_table():
+    try:
+        table = dynamodb.create_table(
+            TableName=TABLE_NAME,
+            KeySchema=[
+                {'AttributeName': 'request_id', 'KeyType': 'HASH'},  # Partition key
+            ],
+            AttributeDefinitions=[
+                {'AttributeName': 'request_id', 'AttributeType': 'S'},
+            ],
+            ProvisionedThroughput={
+                'ReadCapacityUnits': 5,
+                'WriteCapacityUnits': 5,
+            }
+        )
+        print("Creating table. Please wait...")
+        table.meta.client.get_waiter('table_exists').wait(TableName=TABLE_NAME)
+        print(f"Table '{TABLE_NAME}' created successfully.")
+    except ClientError as e:
+        if e.response['Error']['Code'] == 'ResourceInUseException':
+            print(f"Table '{TABLE_NAME}' already exists.")
+        else:
+            raise
 
-table.put_item(Item=item)
-print(f"✅ Record inserted with request_id: {request_id}")
+def write_environment_request():
+    table = dynamodb.Table(TABLE_NAME)
+
+    # Dummy form data — replace with actual values from your app
+    env_request = {
+        'request_id': str(uuid.uuid4()),
+        'env_name': 'TestEnv',
+        'env_purpose': 'Demo',
+        'use_case': 'Regression Modeling',
+        'data_domain': 'Retail Lending',
+        'ide': 'jupyter',
+        'timestamp': datetime.now(timezone.utc).isoformat(),
+    }
+
+    try:
+        response = table.put_item(Item=env_request)
+        print("Successfully inserted item:")
+        print(env_request)
+    except ClientError as e:
+        print(f"Failed to write item: {e.response['Error']['Message']}")
+
+if __name__ == "__main__":
+    create_table()
+    write_environment_request()
