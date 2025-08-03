@@ -6,6 +6,16 @@ from botocore.exceptions import ClientError
 # Replace with your actual region
 AWS_REGION = "us-east-1"
 
+# --- AWS Session Setup ---
+session = boto3.Session(
+    aws_access_key_id='your-access-key-id',
+    aws_secret_access_key='your-secret-access-key',
+    aws_session_token='your-session-token',  # omit if not using temporary creds
+    region_name='us-east-1'
+)
+dynamodb = session.resource('dynamodb')
+
+
 # Initialize DynamoDB resource
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
 
