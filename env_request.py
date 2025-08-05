@@ -23,3 +23,11 @@ class EnvRequest(Model):
     requested_by = UnicodeAttribute(null=True)
     status = UnicodeAttribute(null=True)
     created_at = UnicodeAttribute(default=lambda: datetime.utcnow().isoformat())
+
+# Create the table if it doesn't exist
+if not UserModel.exists():
+    print("Creating table...")
+    UserModel.create_table(read_capacity_units=5, write_capacity_units=5, wait=True)
+    print("Table created.")
+else:
+    print("Table already exists."
